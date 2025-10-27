@@ -1,70 +1,101 @@
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Budget Tracker - Add Transaction</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.8/css/bootstrap.min.css" integrity="sha512-2bBQCjcnw658Lho4nlXJcc6WkV/UxpE/sAokbXPxQNGqmNdQrWqtw26Ns9kFF/yG792pKR1Sx8/Y1Lf1XN4GKA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
-    <nav class="">
-        <div class="">
-            <h1 class="">Budget Tracker</h1>
-            <ul class="">
-                <li><a href='index.html'>Dashboard</a></li>
-                <li><a class='' href='add-transaction.html'>Add Transaction</a></li>
-                <li><a href='transactions.html'>All Transactions</a></li>
-            </ul>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">Budget Tracker</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="transactions.html">Transactions</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="add-transaction.html">Add Transaction</a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 
-    <div class="">
-        <div class="">
-            <h2 id="">Add New Transaction</h2>
-            <p>Enter transaction details below</p>
-        </div>
+    <!-- Main Content -->
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Header -->
+                <div class="text-center mb-4">
+                    <h2 class="display-5">Add New Transaction</h2>
+                    <p class="text-muted">Enter transaction details below</p>
+                </div>
 
-        <div class="">
-            <div id="" class="" style="display: none;"></div>
-            <div id="" class="" style="display: none;"></div>
+                <!-- Alert Messages -->
+                <div id="success-alert" class="alert alert-success alert-dismissible fade show" role="alert" style="display: none;">
+                    <span id="success-message"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div id="error-alert" class="alert alert-danger alert-dismissible fade show" role="alert" style="display: none;">
+                    <span id="error-message"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
 
-            <form id="">
-                <div class="">
-                    <div class="">
-                        <label for="type">Type *</label>
-                        <select id="" required>
-                            <option value="">Select Type</option>
-                            <option value="income">Income</option>
-                            <option value="expense">Expense</option>
-                        </select>
-                    </div>
-                    <div class="">
-                        <label for="category">Category *</label>
-                        <select id="" required disabled>
-                            <option value="">Select Category</option>
-                        </select>
-                    </div>
-                    <div class="">
-                        <label for="amount">Amount ($) *</label>
-                        <input type="number" id="" step="0.01" min="0.01" placeholder="0.00" required>
-                    </div>
-                    <div class="">
-                        <label for="date">Date *</label>
-                        <input type="date" id="" required>
+                <!-- Transaction Form -->
+                <div class="card shadow">
+                    <div class="card-body p-4">
+                        <form id="transaction-form">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="type" class="form-label">Type *</label>
+                                    <select id="type" class="form-select" required>
+                                        <option value="">Select Type</option>
+                                        <option value="income">Income</option>
+                                        <option value="expense">Expense</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="category" class="form-label">Category *</label>
+                                    <select id="category" class="form-select" required disabled>
+                                        <option value="">Select Category</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="amount" class="form-label">Amount ($) *</label>
+                                    <input type="number" id="amount" class="form-control" step="0.01" min="0.01" placeholder="0.00" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="date" class="form-label">Date *</label>
+                                    <input type="date" id="date" class="form-control" required>
+                                </div>
+                                <div class="col-12">
+                                    <label for="description" class="form-label">Description *</label>
+                                    <textarea id="description" class="form-control" rows="3" placeholder="Enter transaction description" required></textarea>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2 mt-4">
+                                <button type="submit" class="btn btn-primary" id="submit-btn">Add Transaction</button>
+                                <button type="button" class="btn btn-secondary" id="cancel-btn" style="display: none;">Cancel</button>
+                                <a class="btn btn-outline-secondary ms-auto" href="index.html">Back to Dashboard</a>
+                            </div>
+                        </form>
                     </div>
                 </div>
-                <div class="">
-                    <label for="description">Description *</label>
-                    <textarea id="" placeholder="Enter transaction description" required></textarea>
-                </div>
-                <div class="">
-                    <button type="submit" class="" id="">Add Transaction</button>
-                    <button type="button" class="" id="" style="display: none;">Cancel</button>
-                    <a class='' href='index.html'>Back to Dashboard</a>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.8/js/bootstrap.bundle.min.js" integrity="sha512-3fNhYMb6/OKJTfLlH7h6FVPS5RbtfQSZMVp2J9fJ2pFsX7MkxPJvhPXi2ypGMuq1z+hfW4+K6VKL5hEkGBVKqg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
 </html>
