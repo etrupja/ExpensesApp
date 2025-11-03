@@ -1,24 +1,20 @@
-function helloThere() {
-            alert('Hello from test.js file');
-
-
-            let belowText = document.getElementById('belowText');
-
-            belowText.innerText = "Text changed by test.js file";
-
-            belowText.classList.remove('text-muted');
-            belowText.classList.add('font-weight-bold', 'bg-primary', 'text-white', 'p-2', 'rounded');
-
-
-        }
-``
 function submitFormData(event) {
 
     event.preventDefault();
 
     console.log("Form submitted!");
 
+    // Capture all form field values
     let description = document.getElementById('description').value;
+    let amount = document.getElementById('amount').value;
+    let date = document.getElementById('date').value;
+    let category = document.getElementById('category').value;
 
+    // Log all the form data
+    console.log("=== Form Data ===");
     console.log("Description: " + description);
+    console.log("Amount: " + amount);
+    console.log("Date: " + date);
+    console.log("Category: " + category);
+    console.log("=================");
 }
