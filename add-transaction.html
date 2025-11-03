@@ -38,7 +38,7 @@
                 <!-- Header -->
                 <div class="text-center mb-4">
                     <h2 class="display-5">Add New Transaction</h2>
-                    <p class="text-muted">Enter transaction details below</p>
+                    <p class="text-muted" id="belowText">Enter transaction details below</p>
                 </div>
 
                 <!-- Alert Messages -->
@@ -54,7 +54,7 @@
                 <!-- Transaction Form -->
                 <div class="card shadow">
                     <div class="card-body p-4">
-                        <form id="transaction-form">
+                        <form id="transaction-form" onsubmit="submitFormData(event)">
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label for="type" class="form-label">Type *</label>
@@ -94,6 +94,8 @@
             </div>
         </div>
     </div>
+
+    <script src="scripts/test.js"></script>
 
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.8/js/bootstrap.bundle.min.js" integrity="sha512-3fNhYMb6/OKJTfLlH7h6FVPS5RbtfQSZMVp2J9fJ2pFsX7MkxPJvhPXi2ypGMuq1z+hfW4+K6VKL5hEkGBVKqg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
