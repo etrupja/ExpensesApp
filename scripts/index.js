@@ -18,9 +18,9 @@ function loadDashboard() {
     const currentBalance = totalIncome - totalExpenses;
 
     // Update the dashboard cards
-    document.getElementById('total-income').textContent = '$' + totalIncome.toFixed(2);
-    document.getElementById('total-expenses').textContent = '$' + totalExpenses.toFixed(2);
-    document.getElementById('current-balance').textContent = '$' + currentBalance.toFixed(2);
+    $('#total-income').text('$' + totalIncome.toFixed(2));
+    $('#total-expenses').text('$' + totalExpenses.toFixed(2));
+    $('#current-balance').text('$' + currentBalance.toFixed(2));
 
     // Load recent transactions
     loadRecentTransactions(transactions);
@@ -28,14 +28,14 @@ function loadDashboard() {
 
 // Load recent transactions (last 5)
 function loadRecentTransactions(transactions) {
-    const tbody = document.getElementById('transactions-body');
+    const $tbody = $('#transactions-body');
 
     // Clear existing rows
-    tbody.innerHTML = '';
+    $tbody.empty();
 
     // Check if there are transactions
     if (transactions.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No transactions yet</td></tr>';
+        $tbody.html('<tr><td colspan="5" class="text-center text-muted">No transactions yet</td></tr>');
         return;
     }
 
@@ -46,21 +46,18 @@ function loadRecentTransactions(transactions) {
 
     // Display each transaction
     recentTransactions.forEach(transaction => {
-        const row = document.createElement('tr');
-
-        // Format amount with $ sign and color
         const amountClass = transaction.type === 'income' ? 'text-success' : 'text-danger';
         const amountSign = transaction.type === 'income' ? '+' : '-';
 
-        row.innerHTML = `
+        const row = $('<tr>').html(`
             <td>${formatDate(transaction.date)}</td>
             <td><span class="badge bg-${transaction.type === 'income' ? 'success' : 'danger'}">${transaction.type}</span></td>
             <td>${transaction.category}</td>
             <td>${transaction.description}</td>
             <td class="${amountClass} fw-bold">${amountSign}$${transaction.amount.toFixed(2)}</td>
-        `;
+        `);
 
-        tbody.appendChild(row);
+        $tbody.append(row);
     });
 }
 
@@ -71,6 +68,6 @@ function formatDate(dateString) {
 }
 
 // Initialize when page loads
-document.addEventListener('DOMContentLoaded', function() {
+$(document).ready(function() {
     loadDashboard();
 });

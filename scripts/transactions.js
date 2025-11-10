@@ -1,14 +1,14 @@
 // Load and display all transactions
 function loadTransactions() {
     const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
-    const tbody = document.getElementById('transactions-body');
+    const $tbody = $('#transactions-body');
 
     // Clear existing rows
-    tbody.innerHTML = '';
+    $tbody.empty();
 
     // Check if there are transactions
     if (transactions.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No transactions yet</td></tr>';
+        $tbody.html('<tr><td colspan="6" class="text-center text-muted">No transactions yet</td></tr>');
         return;
     }
 
@@ -17,24 +17,21 @@ function loadTransactions() {
 
     // Display each transaction
     transactions.forEach(transaction => {
-        const row = document.createElement('tr');
-
-        // Format amount with $ sign and color
         const amountClass = transaction.type === 'income' ? 'text-success' : 'text-danger';
         const amountSign = transaction.type === 'income' ? '+' : '-';
 
-        row.innerHTML = `
+        const row = $('<tr>').html(`
             <td>${formatDate(transaction.date)}</td>
             <td><span class="badge bg-${transaction.type === 'income' ? 'success' : 'danger'}">${transaction.type}</span></td>
             <td>${transaction.category}</td>
             <td>${transaction.description}</td>
             <td class="${amountClass} fw-bold">${amountSign}$${transaction.amount.toFixed(2)}</td>
             <td>
-                <button class="btn btn-sm btn-danger" onclick="deleteTransaction(${transaction.id})">Delete</button>
+                <button class="btn btn-sm btn-danger delete-btn" data-transaction-id="${transaction.id}">Delete</button>
             </td>
-        `;
+        `);
 
-        tbody.appendChild(row);
+        $tbody.append(row);
     });
 }
 
@@ -56,9 +53,9 @@ function deleteTransaction(id) {
 
 // Filter transactions
 function filterTransactions() {
-    const filterType = document.getElementById('filterType').value;
-    const filterDateFrom = document.getElementById('filterDateFrom').value;
-    const filterDateTo = document.getElementById('filterDateTo').value;
+    const filterType = $('#filterType').val();
+    const filterDateFrom = $('#filterDateFrom').val();
+    const filterDateTo = $('#filterDateTo').val();
 
     let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
 
@@ -81,11 +78,11 @@ function filterTransactions() {
 
 // Display filtered transactions
 function displayFilteredTransactions(transactions) {
-    const tbody = document.getElementById('transactions-body');
-    tbody.innerHTML = '';
+    const $tbody = $('#transactions-body');
+    $tbody.empty();
 
     if (transactions.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No transactions found</td></tr>';
+        $tbody.html('<tr><td colspan="6" class="text-center text-muted">No transactions found</td></tr>');
         return;
     }
 
@@ -94,32 +91,37 @@ function displayFilteredTransactions(transactions) {
 
     // Display each transaction
     transactions.forEach(transaction => {
-        const row = document.createElement('tr');
         const amountClass = transaction.type === 'income' ? 'text-success' : 'text-danger';
         const amountSign = transaction.type === 'income' ? '+' : '-';
 
-        row.innerHTML = `
+        const row = $('<tr>').html(`
             <td>${formatDate(transaction.date)}</td>
             <td><span class="badge bg-${transaction.type === 'income' ? 'success' : 'danger'}">${transaction.type}</span></td>
             <td>${transaction.category}</td>
             <td>${transaction.description}</td>
             <td class="${amountClass} fw-bold">${amountSign}$${transaction.amount.toFixed(2)}</td>
             <td>
-                <button class="btn btn-sm btn-danger" onclick="deleteTransaction(${transaction.id})">Delete</button>
+                <button class="btn btn-sm btn-danger delete-btn" data-transaction-id="${transaction.id}">Delete</button>
             </td>
-        `;
+        `);
 
-        tbody.appendChild(row);
+        $tbody.append(row);
     });
 }
 
 // Initialize when page loads
-document.addEventListener('DOMContentLoaded', function() {
+$(document).ready(function() {
     // Load transactions
     loadTransactions();
 
     // Add event listeners for filters
-    document.getElementById('filterType').addEventListener('change', filterTransactions);
-    document.getElementById('filterDateFrom').addEventListener('change', filterTransactions);
-    document.getElementById('filterDateTo').addEventListener('change', filterTransactions);
+    $('#filterType').on('change', filterTransactions);
+    $('#filterDateFrom').on('change', filterTransactions);
+    $('#filterDateTo').on('change', filterTransactions);
+
+    // Handle delete button clicks using event delegation
+    $(document).on('click', '.delete-btn', function() {
+        const transactionId = parseInt($(this).data('transaction-id'));
+        deleteTransaction(transactionId);
+    });
 });
