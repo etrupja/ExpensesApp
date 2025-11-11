@@ -14,22 +14,22 @@ function initializeCategories() {
 // Load categories based on selected type
 function loadCategories(type) {
     const categories = JSON.parse(localStorage.getItem('categories'));
-    const categorySelect = document.getElementById('category');
+    const $categorySelect = $('#category');
 
     // Clear existing options
-    categorySelect.innerHTML = '<option value="">Select Category</option>';
+    $categorySelect.html('<option value="">Select Category</option>');
 
     // Add categories based on type
     if (type && categories[type]) {
-        categorySelect.disabled = false;
+        $categorySelect.prop('disabled', false);
         categories[type].forEach(category => {
-            const option = document.createElement('option');
-            option.value = category;
-            option.textContent = category;
-            categorySelect.appendChild(option);
+            const option = $('<option></option>');
+            option.val(category);
+            option.text(category);
+            $categorySelect.append(option);
         });
     } else {
-        categorySelect.disabled = true;
+        $categorySelect.prop('disabled', true);
     }
 }
 
@@ -38,20 +38,19 @@ function submitFormData(event) {
     event.preventDefault();
 
     // Get form values
-    const type = document.getElementById('type').value;
-    const category = document.getElementById('category').value;
-    const amount = document.getElementById('amount').value;
-    const date = document.getElementById('date').value;
-    const description = document.getElementById('description').value;
-
+    const $type = $('#type').val();
+    const $category = $('#category').val();
+    const $amount = $('#amount').val();
+    const $date = $('#date').val();
+    const $description = $('#description').val();
     // Create transaction object
     const transaction = {
         id: Date.now(),
-        type: type,
-        category: category,
-        amount: parseFloat(amount),
-        date: date,
-        description: description
+        type: $type,
+        category: $category,
+        amount: parseFloat($amount),
+        date: $date,
+        description: $description
     };
 
     // Get existing transactions from localStorage
@@ -67,35 +66,34 @@ function submitFormData(event) {
     showSuccessMessage('Transaction added successfully!');
 
     // Reset form
-    document.getElementById('transaction-form').reset();
-    document.getElementById('category').disabled = true;
+    $('#transaction-form')[0].reset();
+    $('#category').prop('disabled', true);
 }
 
 // Show success message
 function showSuccessMessage(message) {
-    const successAlert = document.getElementById('success-alert');
-    const successMessage = document.getElementById('success-message');
+    const successAlert = $('#success-alert');
+    const successMessage = $('#success-message');
 
-    successMessage.textContent = message;
-    successAlert.style.display = 'block';
-
+    successMessage.text(message);
+    successAlert.show();
     // Hide after 3 seconds
     setTimeout(() => {
-        successAlert.style.display = 'none';
+        successAlert.hide();
     }, 3000);
 }
 
 // Initialize when page loads
-document.addEventListener('DOMContentLoaded', function() {
+$(document).ready(function() {
     // Initialize categories
     initializeCategories();
 
     // Set today's date as default
     const today = new Date().toISOString().split('T')[0];
-    document.getElementById('date').value = today;
+    $('#date').val(today);
 
     // Listen for type changes
-    document.getElementById('type').addEventListener('change', function() {
+    $('#type').on('change', function() {
         loadCategories(this.value);
     });
 });
