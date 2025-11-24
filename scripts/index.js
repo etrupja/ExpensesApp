@@ -72,4 +72,39 @@ function formatDate(dateString) {
 // Initialize when page loads
 $(document).ready(function() {
     loadDashboard();
+
+    // Add click event listeners to the dashboard tiles
+    $('#total-income').closest('.card').css('cursor', 'pointer').click(function() {
+        convertAndAlert($('#total-income').text(), '#total-income');
+    });
+
+    $('#total-expenses').closest('.card').css('cursor', 'pointer').click(function() {
+        convertAndAlert($('#total-expenses').text(), '#total-expenses');
+    });
+
+    $('#current-balance').closest('.card').css('cursor', 'pointer').click(function() {
+        convertAndAlert($('#current-balance').text(), '#current-balance');
+    });
 });
+
+function convertAndAlert(amountText, elementId) {
+    // Remove currency symbols and commas to get the raw number
+    const amount = amountText.replace(/[^0-9.-]+/g, "");
+    
+    const settings = {
+        "async": true,
+        "crossDomain": true,
+        "url": `https://currency-conversion-and-exchange-rates.p.rapidapi.com/convert?from=USD&to=EUR&amount=${amount}`,
+        "method": "GET",
+        "headers": {
+            "x-rapidapi-host": "currency-conversion-and-exchange-rates.p.rapidapi.com",
+            "x-rapidapi-key": "d67a5eab10msh444b6ea21047b91p12c928jsn78f03f342a27"
+        }
+    };
+
+    $.ajax(settings).done(function (response) {
+        if (response.success) {
+            $(elementId).text('€' + response.result.toFixed(2));
+        }
+    });
+}
