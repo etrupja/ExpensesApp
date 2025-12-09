@@ -1,6 +1,6 @@
 // Load and display all transactions
-function loadTransactions() {
-    const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+function loadTransactions(transactions) {
+    
     const $tbody = $('#transactions-body');
 
     // Clear existing rows
@@ -113,8 +113,23 @@ function displayFilteredTransactions(transactions) {
     });
 }
 
+function loadTransactionsFromApi(){
+    const settings = {
+        "url": `http://localhost:5184/api/Expenses/GetAllExpenses`,
+        "method": "GET",
+        "headers": {
+            
+        }
+    };
+
+    $.ajax(settings).done((response) => {
+        loadTransactions(response);
+    });
+}
+
 $(document).ready(function() {
-    loadTransactions();
+
+    loadTransactionsFromApi();
 
     $('#filterType').on('change', filterTransactions);
     $('#filterDateFrom').on('change', filterTransactions);
