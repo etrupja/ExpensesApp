@@ -1,29 +1,42 @@
 // Calculate and display financial summary
 function loadDashboard() {
-    const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+    fetch('https://localhost:7067/api/Expenses/GetAllExpenses')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to load expenses');
+            }
+            return response.json();
+        })
+        .then(transactions => {
+            // Calculate totals
+            let totalIncome = 0;
+            let totalExpenses = 0;
 
-    // Calculate totals
-    let totalIncome = 0;
-    let totalExpenses = 0;
+            transactions.forEach(transaction => {
+                if (transaction.type === 'income') {
+                    totalIncome += transaction.amount;
+                } else if (transaction.type === 'expense') {
+                    totalExpenses += transaction.amount;
+                }
+            });
 
-    transactions.forEach(transaction => {
-        if (transaction.type === 'income') {
-            totalIncome += transaction.amount;
-        } else if (transaction.type === 'expense') {
-            totalExpenses += transaction.amount;
-        }
-    });
+            // Calculate balance
+            const currentBalance = totalIncome - totalExpenses;
 
-    // Calculate balance
-    const currentBalance = totalIncome - totalExpenses;
+            // Update the dashboard cards
+            $('#total-income').text('$' + totalIncome.toFixed(2));
+            $('#total-expenses').text('$' + totalExpenses.toFixed(2));
+            $('#current-balance').text('$' + currentBalance.toFixed(2));
 
-    // Update the dashboard cards
-    $('#total-income').text('$' + totalIncome.toFixed(2));
-    $('#total-expenses').text('$' + totalExpenses.toFixed(2));
-    $('#current-balance').text('$' + currentBalance.toFixed(2));
-
-    // Load recent transactions
-    loadRecentTransactions(transactions);
+            // Load recent transactions
+            loadRecentTransactions(transactions);
+        })
+        .catch(error => {
+            console.error('Error loading dashboard:', error);
+            $('#total-income').text('$0.00');
+            $('#total-expenses').text('$0.00');
+            $('#current-balance').text('$0.00');
+        });
 }
 
 // Load recent transactions (last 5)

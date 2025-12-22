@@ -47,36 +47,56 @@ function formatDate(dateString) {
 // Delete transaction
 function deleteTransaction(id) {
     if (confirm('Are you sure you want to delete this transaction?')) {
-        let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
-        transactions = transactions.filter(t => t.id !== id);
-        localStorage.setItem('transactions', JSON.stringify(transactions));
-        loadTransactions();
+        fetch(`https://localhost:7067/api/Expenses/DeleteExpense/${id}`, {
+            method: 'DELETE'
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to delete transaction');
+                }
+                loadTransactionsFromApi();
+            })
+            .catch(error => {
+                console.error('Error deleting transaction:', error);
+                alert('Failed to delete transaction');
+            });
     }
 }
 
 // Filter transactions
 function filterTransactions() {
-    const $filterType = $('#filterType').val();
+    const filterType = $('#filterType').val();
     const filterDateFrom = $('#filterDateFrom').val();
     const filterDateTo = $('#filterDateTo').val();
 
-    let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+    fetch('https://localhost:7067/api/Expenses/GetAllExpenses')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to load expenses');
+            }
+            return response.json();
+        })
+        .then(transactions => {
+            // Apply filters
+            if (filterType !== 'all') {
+                transactions = transactions.filter(t => t.type === filterType);
+            }
 
-    // Apply filters
-    if (filterType !== 'all') {
-        transactions = transactions.filter(t => t.type === filterType);
-    }
+            if (filterDateFrom) {
+                transactions = transactions.filter(t => t.date.split('T')[0] >= filterDateFrom);
+            }
 
-    if (filterDateFrom) {
-        transactions = transactions.filter(t => t.date >= filterDateFrom);
-    }
+            if (filterDateTo) {
+                transactions = transactions.filter(t => t.date.split('T')[0] <= filterDateTo);
+            }
 
-    if (filterDateTo) {
-        transactions = transactions.filter(t => t.date <= filterDateTo);
-    }
-
-    // Display filtered transactions
-    displayFilteredTransactions(transactions);
+            // Display filtered transactions
+            displayFilteredTransactions(transactions);
+        })
+        .catch(error => {
+            console.error('Error filtering transactions:', error);
+            displayFilteredTransactions([]);
+        });
 }
 
 // Display filtered transactions

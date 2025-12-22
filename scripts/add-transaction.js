@@ -1,19 +1,15 @@
-// Initialize categories in localStorage when app starts
+// Initialize categories (static categories, no longer stored in localStorage)
 function initializeCategories() {
-    const categories = {
-        income: ['Salary', 'Freelance', 'Investment', 'Gift', 'Other Income'],
-        expense: ['Food', 'Transport', 'Shopping', 'Bills', 'Entertainment', 'Health', 'Other Expense']
-    };
-
-    // Store categories in localStorage if not already there
-    if (!localStorage.getItem('categories')) {
-        localStorage.setItem('categories', JSON.stringify(categories));
-    }
+    // Categories are now loaded dynamically or kept as constants
+    // This function is kept for backward compatibility
 }
 
 // Load categories based on selected type
 function loadCategories(type) {
-    const categories = JSON.parse(localStorage.getItem('categories'));
+    const categories = {
+        income: ['Salary', 'Freelance', 'Investment', 'Gift', 'Other Income'],
+        expense: ['Food', 'Transport', 'Shopping', 'Bills', 'Entertainment', 'Health', 'Other Expense']
+    };
     const $categorySelect = $('#category');
 
     // Clear existing options
@@ -43,31 +39,45 @@ function submitFormData(event) {
     const $amount = $('#amount').val();
     const $date = $('#date').val();
     const $description = $('#description').val();
+
     // Create transaction object
     const transaction = {
-        id: Date.now(),
         type: $type,
         category: $category,
         amount: parseFloat($amount),
-        date: $date,
+        date: new Date($date).toISOString(),
         description: $description
     };
 
-    // Get existing transactions from localStorage
-    let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+    console.log('Submitting transaction:', transaction);
 
-    // Add new transaction
-    transactions.push(transaction);
+    fetch('https://localhost:7067/api/Expenses/AddExpense', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(transaction)
+    })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(error => {
+                    throw new Error(error);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Show success message
+            showSuccessMessage('Transaction added successfully!');
 
-    // Save to localStorage
-    localStorage.setItem('transactions', JSON.stringify(transactions));
-
-    // Show success message
-    showSuccessMessage('Transaction added successfully!');
-
-    // Reset form
-    $('#transaction-form')[0].reset();
-    $('#category').prop('disabled', true);
+            // Reset form
+            $('#transaction-form')[0].reset();
+            $('#category').prop('disabled', true);
+        })
+        .catch(error => {
+            console.error('Error adding transaction:', error);
+            showErrorMessage('Failed to add transaction: ' + error.message);
+        });
 }
 
 // Show success message
@@ -81,6 +91,21 @@ function showSuccessMessage(message) {
     setTimeout(() => {
         successAlert.hide();
     }, 3000);
+}
+
+// Show error message
+function showErrorMessage(message) {
+    const errorAlert = $('#error-alert');
+    if (errorAlert.length) {
+        errorAlert.find('.alert-message').text(message);
+        errorAlert.show();
+        // Hide after 3 seconds
+        setTimeout(() => {
+            errorAlert.hide();
+        }, 3000);
+    } else {
+        alert(message);
+    }
 }
 
 // Initialize when page loads
